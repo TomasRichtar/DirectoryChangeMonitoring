@@ -1,0 +1,60 @@
+﻿@{
+    ViewData["Title"] = "Analysis Result";
+    var newFiles = ViewBag.NewFiles as List<FileDetail>;
+    var changedFiles = ViewBag.ChangedFiles as List<FileDetail>;
+    var deletedFiles = ViewBag.DeletedFiles as List<FileDetail>;
+    var directoryPath = ViewBag.DirectoryPath as string;
+    var showChanges = TempData["ShowChanges"] as bool? ?? false;
+}
+
+<h1>Analysis Result for @directoryPath</h1>
+@if (showChanges)
+{
+    @if (newFiles.Count > 0 || changedFiles.Count > 0 || deletedFiles.Count > 0)
+    {
+        <ul style="list-style-type: none; padding-left: 0;">
+            @foreach (var file in newFiles)
+            {
+                <li><b>[A]</b> @file.FilePath
+                    (Version: @file.Version
+                    )</li>
+            }
+
+            @foreach (var file in changedFiles)
+            {
+                <li><b>[M]</b> @file.FilePath
+                    (Version: @file.Version
+                    )</li>
+            }
+
+            @foreach (var file in deletedFiles)
+            {
+                <li><b>[D]</b> @file.FilePath </li>
+            }
+        </ul>
+        <h3>Hints</h3>
+        <ul>
+            <li>[A]	= Added</li>
+            <li>[M]	= Modified</li>
+            <li>[D]	= Deleted</li>
+        </ul>
+    }
+    else
+    {
+        <p>No changes</p>
+    }
+
+}else
+{
+    <p>Prepared for analyzing</p>
+}
+<div class="d-flex justify-content-start">
+    <a asp-action="Index" class="btn btn-primary">Back</a>
+    <div style="margin-left: 350px;">
+        <form asp-action="Analyze" method="post">
+            <input type="hidden" name="directoryPath" value="@directoryPath" />
+            <button type="submit" class="btn btn-primary">Analyze</button>
+        </form>
+    </div>
+</div>
+
